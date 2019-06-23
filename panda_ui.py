@@ -1,4 +1,5 @@
 from direct.showbase.ShowBase import ShowBase
+from direct.task import Task
 from panda3d.core import Geom
 from panda3d.core import GeomNode
 from panda3d.core import GeomPoints
@@ -37,6 +38,13 @@ class UI(ShowBase):
         self.disableMouse()
         self.nodePath.reparentTo(self.render)
 
+    def add_task(self, task):
+        def task_wrapper(taskObject):
+            task()
+            return Task.cont
+        self.taskMgr.add(task_wrapper)
+
 def main():
+
     application = Application()
     application.run()

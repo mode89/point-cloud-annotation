@@ -4,7 +4,11 @@ from panda_ui import UI
 
 def main():
     ui = UI()
+    ui.add_task(task)
     ui.run()
+
+def task():
+    print("Hello, World!")
 
 if __name__ == "__main__":
     main()
