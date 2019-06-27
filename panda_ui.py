@@ -13,22 +13,10 @@ class UI(ShowBase):
     def __init__(self):
         ShowBase.__init__(self)
         vertexFormat = GeomVertexFormat.getV3c4()
-        vertexData = GeomVertexData("data", vertexFormat, Geom.UHStatic)
-        vertexData.setNumRows(4)
-        vertexWriter = GeomVertexWriter(vertexData, "vertex")
-        colorWriter = GeomVertexWriter(vertexData, "color")
-        vertexWriter.addData3f(-1, 0, -1)
-        colorWriter.addData4f(1.0, 0.0, 0.0, 1.0)
-        vertexWriter.addData3f(-1, 0, 1)
-        colorWriter.addData4f(0.0, 1.0, 0.0, 1.0)
-        vertexWriter.addData3f(1, 0, 1)
-        colorWriter.addData4f(0.0, 0.0, 1.0, 1.0)
-        vertexWriter.addData3f(1, 0, -1)
-        colorWriter.addData4f(1.0, 0.0, 1.0, 1.0)
-        geometry = Geom(vertexData)
-        points = GeomPoints(Geom.UHStatic)
-        points.addVertices(0, 1, 2, 3)
-        geometry.addPrimitive(points)
+        self.vertexData = GeomVertexData("data", vertexFormat, Geom.UHDynamic)
+        geometry = Geom(self.vertexData)
+        self.primitive = GeomPoints(Geom.UHDynamic)
+        geometry.addPrimitive(self.primitive)
         node = GeomNode("node")
         node.addGeom(geometry)
         self.nodePath = NodePath(node)
@@ -43,6 +31,19 @@ class UI(ShowBase):
             task()
             return Task.cont
         self.taskMgr.add(task_wrapper)
+
+    def set_points(self, position, color):
+        assert len(position) == len(color)
+        self.vertexData.setNumRows(len(position))
+        self.primitive.clearVertices()
+        for i in range(len(position)):
+            self.primitive.addVertex(i)
+        self.primitive.closePrimitive()
+        positionWriter = GeomVertexWriter(self.vertexData, "vertex")
+        colorWriter = GeomVertexWriter(self.vertexData, "color")
+        for p, c in zip(position, color):
+            positionWriter.addData3f(p[0], p[1], p[2])
+            colorWriter.addData4f(c[0], c[1], c[2], c[3])
 
 def main():
 

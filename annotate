@@ -2,13 +2,26 @@
 
 from panda_ui import UI
 
-def main():
-    ui = UI()
-    ui.add_task(task)
-    ui.run()
+class Application:
 
-def task():
-    print("Hello, World!")
+    def __init__(self):
+        self.ui = UI()
+        self.ui.add_task(self.update_points)
+        self.counter = 0
+
+    def run(self):
+        self.ui.run()
+
+    def update_points(self):
+        self.counter += 1
+        position = [
+            [ self.counter * 0.0001, 0.0, 0.0 ],
+        ]
+        color = [
+            [ self.counter * 0.0001, 0.0, 0.0, 1.0 ],
+        ]
+        self.ui.set_points(position, color)
 
 if __name__ == "__main__":
-    main()
+    application = Application()
+    application.run()
